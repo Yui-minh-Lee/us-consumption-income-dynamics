@@ -1,0 +1,36 @@
+# Local research archive (not part of the portfolio release)
+/except_2020/
+/Macro_Econometric_thesis/
+/宏观实证期末论文/
+/.agents/
+/.codex/
+/docs/PUBLICATION_CHECKLIST.md
+
+# MATLAB autosave and editor artifacts
+*.asv
+*.m~
+*.autosave
+
+# Generated MATLAB data and logs
+/data/processed/
+*.mat
+*.log
+*.diary
+
+# Generated output folders
+output/
+outputs/
+
+# MATLAB build/cache folders
+slprj/
+codegen/
+*.mexw64
+
+# Local validation artifacts
+_validation_tmp_*/
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
