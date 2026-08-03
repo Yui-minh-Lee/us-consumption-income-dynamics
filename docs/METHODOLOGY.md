@@ -1,16 +1,20 @@
-# Methodology
+# 研究方法
 
-## Economic question
+## 研究问题
 
-Does aggregate consumption respond differently to persistent business-cycle movements and shorter-lived income fluctuations?
+当收入波动具有不同的持续时间时，居民消费是否会作出不同程度的反应？
 
-## Data preparation
+这个问题的意义在于：短暂的收入扰动与持续数年的商业周期变化，对家庭预期、就业安全和消费决策的影响可能并不相同。若把所有波动合并估计，得到的平均系数可能难以反映真实差异。
 
-Nominal consumption and disposable personal income are deflated by PCEPI. Market income is measured using real personal income excluding current transfer receipts. A transfer factor is constructed as the log difference between real disposable income and market income.
+## 数据处理
 
-The scripts use Hamilton filtering to remove slow-moving components of the consumption-income ratio and transfer factor. The unemployment rate is decomposed into trend and gap components and enters the state-space system as an external labor-market anchor.
+名义消费和个人可支配收入均使用 PCEPI 进行平减。市场收入使用“扣除经常转移收入后的实际个人收入”衡量。实际可支配收入与市场收入的对数差被构造成转移支付因子。
 
-## Baseline model
+代码使用 Hamilton 滤波处理消费—收入比和转移支付因子中的缓慢趋势；失业率则被分解为趋势项和缺口项。失业率缺口作为劳动力市场的外部信息，帮助状态空间模型识别经济周期。
+
+## 单周期基准模型
+
+基准模型的观测方程可简化表示为：
 
 ```text
 y_t     = tau_t + psi_t
@@ -18,9 +22,19 @@ c_t     = tau_t + lambda_t psi_t + gamma Tr_t + u_c,t
 u_gap,t = theta psi_t + u_u,t
 ```
 
-The latent cycle follows a damped stochastic cycle. The baseline permits `lambda_t = lambda_0 + beta S_(t-1)`. In the archived estimate, beta is not statistically significant.
+其中：
 
-## Dual-cycle extension
+- `tau_t` 为收入的长期趋势；
+- `psi_t` 为潜在经济周期；
+- `lambda_t` 为消费对收入周期的敏感度；
+- `theta` 为失业率缺口与收入周期之间的奥肯系数；
+- `Tr_t` 为转移支付因子。
+
+潜在周期被设定为带阻尼的随机周期。基准模型允许消费敏感度随高失业状态变化，即 `lambda_t = lambda_0 + beta S_(t-1)`。归档结果显示 `beta` 并不显著，因此没有足够证据支持简单的危机状态依赖关系。
+
+## 长、短双周期模型
+
+扩展模型将收入周期进一步拆分为长周期和短周期：
 
 ```text
 y_t     = psi_L,t + psi_S,t
@@ -28,16 +42,29 @@ c_t     = lambda_L psi_L,t + lambda_S psi_S,t + gamma_c Tr_t + u_c,t
 u_gap,t = theta_L psi_L,t + theta_S psi_S,t + gamma_u Tr_t + u_u,t
 ```
 
-Each component follows a damped rotation with constrained period bounds. The reported specification targets 60-96 months for the long cycle and 8-24 months for the short cycle.
+两个周期分别具有独立的持续性、周期长度、波动率、消费敏感度和奥肯系数。归档模型将长周期范围约束在 60—96 个月，短周期范围约束在 8—24 个月。
 
-## Estimation
+这一设定的核心目的不是给冲击贴上确定的结构性标签，而是检验消费—收入关系是否会随波动频率发生变化。
 
-Parameters are mapped from an unconstrained optimization space into economically admissible ranges. `fminsearch` supplies a simplex pre-optimization; MATLAB's state-space `estimate` routine and `fminunc` then refine the solution and provide an approximate Hessian.
+## 参数估计
 
-## Interpretation boundaries
+为了保证参数落在合理范围内，代码先将无约束参数映射到预设区间，再分两步进行数值优化：
 
-- Extracted cycles are statistical latent components, not independently identified structural shocks.
-- An insignificant Okun coefficient should not be assigned a structural-shock label.
-- The transfer factor is endogenous to macroeconomic conditions; its coefficient is conditional association.
-- Standard errors rely on local curvature in a constrained nonlinear model.
+1. 使用 `fminsearch` 进行单纯形预搜索，降低初始值不佳带来的影响；
+2. 使用 MATLAB 状态空间模型的 `estimate` 函数和 `fminunc` 进一步优化，并根据局部 Hessian 矩阵计算近似标准误。
 
+## 稳健性检验
+
+论文主要考察了两类设定变化：
+
+- 调整长、短周期允许的区间；
+- 放松或重新设置消费、失业率测量误差的约束。
+
+不同设定下，短周期敏感度的具体数值会发生变化，但长周期消费敏感度高于短周期这一相对关系基本保留。
+
+## 解释边界
+
+- 模型提取的是统计意义上的潜在周期，不等同于已经识别出的结构性冲击；
+- 奥肯系数不显著时，不应仅根据正负号判断冲击属于供给侧还是需求侧；
+- 转移支付会内生地响应经济状况，其估计系数只能作条件相关解释；
+- 非线性约束模型的标准误依赖最优点附近的局部曲率，需要结合参数边界和稳健性结果判断。

@@ -1,90 +1,112 @@
-# Frequency-Dependent U.S. Consumption-Income Dynamics
+# 不同经济周期下的美国消费—收入关系
 
-> A MATLAB state-space study of how U.S. consumption co-moves with market income at long and short business-cycle frequencies, with unemployment and fiscal transfers as additional signals.
+> 基于 MATLAB 状态空间模型，研究美国居民消费对长、短周期收入波动的不同反应，并结合失业率与财政转移支付进行识别。
 
-## 项目简介
+## 项目概览
 
-本项目研究美国居民消费如何响应不同频率的收入波动。传统总量模型往往用单一消费敏感度概括所有冲击；本项目使用带失业率锚定的状态空间模型，将市场收入分解为长、短周期，并分别估计消费对两类周期的响应。
+居民消费既会受到长期收入预期的影响，也会受到短期就业、流动性和政策环境的扰动。如果只用一个平均系数描述消费与收入的关系，可能会掩盖不同周期之间的差异。
 
-研究使用美国月度宏观数据、Hamilton filter、HP filter、不可观测成分模型和约束极大似然估计，展示从经济问题、数据处理、模型识别到稳健性检验和结果可视化的完整实证流程。
+本项目使用美国月度宏观数据，将市场收入分解为长周期和短周期，分别估计居民消费对两类波动的敏感度。同时，引入失业率缺口作为劳动力市场“锚”，并将财政转移支付从市场收入中单独拆分出来。
 
-## Main findings
+项目覆盖了较完整的实证研究流程，包括数据清洗、平稳性检验、Hamilton 滤波、HP 滤波、状态空间建模、约束极大似然估计、稳健性检验和结果可视化。
 
-| Component | Estimated period | Consumption sensitivity | Okun coefficient |
+## 主要结论
+
+| 周期成分 | 估计周期 | 消费敏感度 | 奥肯系数 |
 |---|---:|---:|---:|
-| Long cycle | 86.4 months | 1.031*** | -0.368*** |
-| Short cycle | 24.0 months | 0.296*** | 0.034 (not significant) |
+| 长周期 | 约 86.4 个月 | 1.031*** | -0.368*** |
+| 短周期 | 约 24.0 个月 | 0.296*** | 0.034（不显著） |
 
-- Long-cycle consumption-income co-movement is materially stronger than short-cycle co-movement.
-- The baseline state-dependence coefficient is not statistically significant (`p = 0.706`), motivating a frequency decomposition rather than a crisis-dummy interpretation.
-- The transfer-factor loading is positive (`gamma = 0.541`) in the dual-cycle model. It is a conditional association, not a causal fiscal multiplier.
-- The short-cycle Okun coefficient is not significant in the main specification, so the short component is not assigned a definitive structural-shock label.
+注：`***` 表示估计结果在 1% 水平上显著。
 
-Full archived estimates and robustness checks are reported in [`results/RESULTS.md`](results/RESULTS.md).
+这里的“消费敏感度”表示：收入周期偏离趋势 1% 时，消费周期平均变化多少。
 
-![Long- and short-cycle extraction](results/figures/Fig1_Cycles.png)
+- 消费与收入在长周期上的联动明显强于短周期，说明居民对持续性较强的收入变化反应更充分。
+- 基准模型中的状态依赖系数并不显著（`p = 0.706`）。因此，相比简单区分“危机期/正常期”，从周期频率入手更能解释样本中的差异。
+- 双周期模型中的转移支付系数为正（`γ = 0.541`），表明转移支付与消费波动存在正向条件相关关系。由于转移支付本身会随经济状况变化，这一结果不能直接解释为因果意义上的财政乘数。
+- 长周期奥肯系数为负且显著，为周期识别提供了劳动力市场依据；短周期奥肯系数在主模型中不显著，因此本文不对短周期冲击作过强的结构性解释。
 
-![Consumption-cycle decomposition](results/figures/Fig4_Cons_Decomp.png)
+完整参数和稳健性检验见 [`results/RESULTS.md`](results/RESULTS.md)。
 
-## Research workflow
+![长、短周期分解](results/figures/Fig1_Cycles.png)
 
-1. Construct real consumption, real disposable income, market income, and a transfer factor.
-2. Inspect the consumption-income relation and test adjusted residual stationarity.
-3. Estimate a trivariate baseline state-space model using income, consumption, and the unemployment gap.
-4. Extend the model to separate long and short stochastic cycles.
-5. Compare alternative period bounds and measurement-noise restrictions.
-6. Export recruiter-readable figures and parameter tables.
+![消费周期驱动因素分解](results/figures/Fig4_Cons_Decomp.png)
 
-See [`docs/METHODOLOGY.md`](docs/METHODOLOGY.md) for the model equations and interpretation.
+## 研究流程
 
-## Repository structure
+1. 构造实际消费、实际可支配收入、市场收入和转移支付因子。
+2. 检查消费—收入关系，并对调整后的残差进行平稳性检验。
+3. 使用收入、消费和失业率缺口估计三变量基准状态空间模型。
+4. 将单周期模型扩展为长、短双周期模型。
+5. 调整周期边界和测量误差约束，检验结果是否稳健。
+6. 输出适合阅读和展示的结果图与参数表。
+
+模型方程和解释边界见 [`docs/METHODOLOGY.md`](docs/METHODOLOGY.md)。
+
+## 项目结构
 
 ```text
 data/
-  US_Data.csv              Monthly source dataset
+  US_Data.csv              美国月度宏观数据
 src/
-  prepare_data.m           Transformations and stationarity check
-  baseline_model.m         Single-cycle trivariate model
-  dual_cycle_model.m       Long/short-cycle extended model
-  export_figures.m         Publication-quality figure export
+  prepare_data.m           数据处理与平稳性检验
+  baseline_model.m         单周期三变量基准模型
+  dual_cycle_model.m       长、短周期扩展模型
+  export_figures.m         结果图导出脚本
 results/
-  figures/                 Selected 300-DPI outputs
-  RESULTS.md               Estimates and robustness summary
+  figures/                 300 DPI 结果图
+  RESULTS.md               参数估计与稳健性结果
 docs/
-  DATA_DICTIONARY.md       FRED series, units, and transformations
-  METHODOLOGY.md           Model specification and limitations
+  DATA_DICTIONARY.md       数据定义、单位和来源
+  METHODOLOGY.md           模型设定与局限性
 ```
 
-Development notes, downloaded papers, autosave files, and superseded model variants are retained locally but excluded from the public repository.
+本地仍保留开发笔记、参考文献和其他模型版本，但这些材料没有进入公开仓库，以免干扰主线。
 
-## Reproduction
+## 运行方法
 
-Tested for static compatibility with MATLAB R2024a. Required products are MATLAB, Econometrics Toolbox, Optimization Toolbox, and Statistics and Machine Learning Toolbox.
+代码已在 MATLAB R2024a 下通过静态检查。需要安装：
 
-Open MATLAB at the repository root and run:
+- MATLAB；
+- Econometrics Toolbox；
+- Optimization Toolbox；
+- Statistics and Machine Learning Toolbox。
+
+在 MATLAB 中打开仓库根目录，依次运行：
 
 ```matlab
 run('src/prepare_data.m')
-run('src/baseline_model.m')      % baseline estimates
-run('src/dual_cycle_model.m')    % extended estimates
-run('src/export_figures.m')      % run after the extended model
+run('src/baseline_model.m')      % 基准模型
+run('src/dual_cycle_model.m')    % 双周期扩展模型
+run('src/export_figures.m')      % 在双周期模型之后运行
 ```
 
-The estimation scripts use `fminsearch` followed by `fminunc` and can take several minutes. `prepared_data.mat` is generated under `data/processed/` and is not version-controlled.
+模型先使用 `fminsearch` 搜索较好的初始值，再通过 `fminunc` 进行优化，完整估计可能需要数分钟。数据处理脚本会在 `data/processed/` 下生成 `prepared_data.mat`，该中间文件不会提交到 Git。
 
-## Data and sample
+## 数据与样本
 
-The source CSV contains monthly observations from January 1959 to September 2025. To reproduce the archived analysis while excluding the pandemic regime, the scripts select the first 733 observations (January 1959 through January 2020). The one-month difference from a strict December 2019 cutoff is documented rather than silently changed because the archived figures use this specification.
+原始 CSV 覆盖 1959 年 1 月至 2025 年 9 月。为了避开疫情期间的极端结构变化，并复现论文中的归档结果，模型使用前 733 个月，即 1959 年 1 月至 2020 年 1 月。
 
-The model uses public FRED series including DSPI, PCE, PCEPI, W875RX1, and UNRATE. See the [data dictionary](docs/DATA_DICTIONARY.md) for definitions and source links.
+这一截止日期比严格的“2019 年底”多一个月。由于现有结果图来自该归档设定，仓库选择如实披露，而不是在未重新估计模型的情况下静默修改样本。
 
-## Limitations
+模型使用 DSPI、PCE、PCEPI、W875RX1 和 UNRATE 等 FRED 公开序列，具体定义与来源见[数据字典](docs/DATA_DICTIONARY.md)。
 
-- The cycle decomposition is model-dependent and is not structural causal identification.
-- Fiscal transfers are endogenous to economic conditions; the estimated loading is not a causal policy multiplier.
-- The exact historical FRED vintage/retrieval date was not preserved in the original workflow.
-- Results are an in-sample macroeconomic decomposition, not an asset-return forecasting strategy.
+## 与投研工作的联系
 
-## Disclaimer
+- 从宏观变量出发，将经济问题转化为可估计的计量模型；
+- 识别不同周期成分，避免只依赖单一总量指标判断经济状态；
+- 将收入、消费、就业和财政转移支付放在同一框架下分析；
+- 对统计显著性、模型识别和因果解释保持必要区分。
 
-This repository is a research and portfolio project. It is not investment advice. Any errors are my own.
+本项目是一项样本内宏观分解研究，并非资产收益预测或交易策略回测。
+
+## 局限性
+
+- 周期分解依赖具体模型设定，不能直接视为结构性冲击识别。
+- 财政转移支付具有内生性，估计系数不等同于因果财政乘数。
+- 原始研究流程没有保存准确的数据下载日期和 FRED 历史版本。
+- 完整非线性模型可能受到初始值、参数边界和测量误差设定的影响。
+
+## 声明
+
+本仓库仅用于学术研究和个人作品展示，不构成任何投资建议。

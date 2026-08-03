@@ -1,41 +1,53 @@
-# Archived Results
+# 归档结果
 
-These tables reproduce the estimates reported in the completed course paper so that a reviewer can inspect the main evidence without running MATLAB.
+以下结果来自已完成的课程论文。将参数表直接放在仓库中，是为了让阅读者无需运行 MATLAB，也能快速了解模型得到的主要证据。
 
-## Baseline single-cycle model
+显著性标记：`***`、`**`、`*` 分别表示在 1%、5% 和 10% 水平上显著。
 
-| Parameter | Estimate | Std. error | p-value |
+## 单周期基准模型
+
+| 参数 | 估计值 | 标准误 | p 值 |
 |---|---:|---:|---:|
-| Trend volatility | 0.0109 | 0.0010 | <0.001 |
-| Cycle damping | 0.9904 | 0.0054 | <0.001 |
-| Cycle period (months) | 95.9999 | 8.6520 | <0.001 |
-| Cycle volatility | 0.0099 | 0.0012 | <0.001 |
-| Trend-cycle correlation | -0.8671 | 0.0275 | <0.001 |
-| Consumption sensitivity | 1.0411 | 0.0228 | <0.001 |
-| State dependence | -0.0107 | 0.0284 | 0.7056 |
-| Okun coefficient | -0.3141 | 0.0362 | <0.001 |
-| Transfer loading | 0.7161 | 0.0277 | <0.001 |
+| 趋势项波动率 | 0.0109 | 0.0010 | <0.001 |
+| 周期阻尼系数 | 0.9904 | 0.0054 | <0.001 |
+| 周期长度（月） | 95.9999 | 8.6520 | <0.001 |
+| 周期项波动率 | 0.0099 | 0.0012 | <0.001 |
+| 趋势—周期相关系数 | -0.8671 | 0.0275 | <0.001 |
+| 消费敏感度 | 1.0411 | 0.0228 | <0.001 |
+| 状态依赖系数 | -0.0107 | 0.0284 | 0.7056 |
+| 奥肯系数 | -0.3141 | 0.0362 | <0.001 |
+| 转移支付系数 | 0.7161 | 0.0277 | <0.001 |
 
-## Extended dual-cycle model
+基准模型中，消费对收入周期的敏感度接近 1，奥肯系数为负且显著；但状态依赖系数不显著，说明高失业状态下的消费敏感度没有表现出稳定差异。
 
-| Component | Parameter | Estimate | Std. error | p-value |
+## 长、短双周期模型
+
+| 周期成分 | 参数 | 估计值 | 标准误 | p 值 |
 |---|---|---:|---:|---:|
-| Long | Damping | 0.9838 | 0.0069 | <0.001 |
-| Long | Period (months) | 86.4251 | 7.9597 | <0.001 |
-| Long | Volatility | 0.0054 | 0.0006 | <0.001 |
-| Long | Consumption sensitivity | 1.0311 | 0.0477 | <0.001 |
-| Long | Okun coefficient | -0.3680 | 0.0250 | <0.001 |
-| Short | Damping | 0.8495 | 0.0287 | <0.001 |
-| Short | Period (months) | 24.0000 | - | Bound |
-| Short | Volatility | 0.0080 | 0.0004 | <0.001 |
-| Short | Consumption sensitivity | 0.2964 | 0.0616 | <0.001 |
-| Short | Okun coefficient | 0.0338 | 0.0344 | 0.3262 |
-| Other | Consumption transfer loading | 0.5412 | 0.0354 | <0.001 |
-| Other | Unemployment transfer loading | 0.0602 | 0.0189 | 0.0015 |
+| 长周期 | 阻尼系数 | 0.9838 | 0.0069 | <0.001 |
+| 长周期 | 周期长度（月） | 86.4251 | 7.9597 | <0.001 |
+| 长周期 | 波动率 | 0.0054 | 0.0006 | <0.001 |
+| 长周期 | 消费敏感度 | 1.0311 | 0.0477 | <0.001 |
+| 长周期 | 奥肯系数 | -0.3680 | 0.0250 | <0.001 |
+| 短周期 | 阻尼系数 | 0.8495 | 0.0287 | <0.001 |
+| 短周期 | 周期长度（月） | 24.0000 | — | 达到参数边界 |
+| 短周期 | 波动率 | 0.0080 | 0.0004 | <0.001 |
+| 短周期 | 消费敏感度 | 0.2964 | 0.0616 | <0.001 |
+| 短周期 | 奥肯系数 | 0.0338 | 0.0344 | 0.3262 |
+| 其他 | 消费方程转移支付系数 | 0.5412 | 0.0354 | <0.001 |
+| 其他 | 失业方程转移支付系数 | 0.0602 | 0.0189 | 0.0015 |
 
-## Robustness summary
+双周期模型显示，长周期消费敏感度约为 1.03，短周期约为 0.30。两者的差异表明，居民消费对持续时间不同的收入波动存在明显不同的反应。
 
-- Alternative period bounds leave long-cycle sensitivity (1.027) above short-cycle sensitivity (0.338).
-- Relaxing measurement-noise restrictions increases short-cycle sensitivity, but it remains below long-cycle sensitivity.
-- Adding a noise floor produces sensitivities of 0.972 (long) and 0.564 (short).
-- The short-cycle Okun coefficient is sensitive to measurement-noise restrictions, so its structural interpretation is deliberately limited.
+短周期奥肯系数在主模型中不显著，因此不能仅凭其正号就将短周期解释为供给冲击。
+
+## 稳健性检验
+
+- 将长周期上限调整为 60 个月、短周期上限调整为 32 个月后，长周期敏感度为 1.027，仍高于短周期的 0.338；
+- 放松测量误差约束后，短周期敏感度有所上升，但仍低于长周期；
+- 为测量误差设置下限后，长、短周期敏感度分别为 0.972 和 0.564；
+- 短周期奥肯系数对测量误差约束较敏感，因此本文对其结构性含义保持谨慎。
+
+## 阅读提示
+
+这些结果用于描述样本内消费、收入和就业之间的动态关系。由于模型没有提供外生政策冲击或工具变量识别，转移支付系数不能直接视为因果意义上的财政政策效果。
