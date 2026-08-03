@@ -91,7 +91,7 @@ run('src/export_figures.m')      % 在双周期模型之后运行
 
 模型使用 DSPI、PCE、PCEPI、W875RX1 和 UNRATE 等 FRED 公开序列，具体定义与来源见[数据字典](docs/DATA_DICTIONARY.md)。
 
-## 与投研工作的联系
+## 主要特点
 
 - 从宏观变量出发，将经济问题转化为可估计的计量模型；
 - 识别不同周期成分，避免只依赖单一总量指标判断经济状态；
